@@ -1,11 +1,13 @@
 package com.campusbook.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.campusbook.dto.BookRequest;
 import com.campusbook.dto.Result;
 import com.campusbook.entity.Book;
 import com.campusbook.service.BookService;
 import com.campusbook.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,15 +37,38 @@ public class BookController {
     }
 
     @PostMapping
-    public Result<String> publishBook(HttpServletRequest request, @RequestBody Book book) {
+    public Result<String> publishBook(HttpServletRequest request, @Validated @RequestBody BookRequest bookRequest) {
         Integer userId = jwtUtil.getUserIdFromToken(request.getHeader("Authorization"));
+        Book book = new Book();
+        book.setTitle(bookRequest.getTitle());
+        book.setAuthor(bookRequest.getAuthor());
+        book.setIsbn(bookRequest.getIsbn());
+        book.setCategory(bookRequest.getCategory());
+        book.setCondition(bookRequest.getCondition());
+        book.setPrice(bookRequest.getPrice());
+        book.setDescription(bookRequest.getDescription());
+        book.setStock(bookRequest.getStock());
+        book.setDeliveryType(bookRequest.getDeliveryType());
+        book.setImages(bookRequest.getImages());
         book.setUserId(userId);
         bookService.publishBook(book);
         return Result.success("发布成功");
     }
 
     @PutMapping("/{id}")
-    public Result<String> updateBook(@PathVariable Integer id, @RequestBody Book book) {
+    public Result<String> updateBook(@PathVariable Integer id, @Validated @RequestBody BookRequest bookRequest) {
+        Book book = new Book();
+        book.setId(id);
+        book.setTitle(bookRequest.getTitle());
+        book.setAuthor(bookRequest.getAuthor());
+        book.setIsbn(bookRequest.getIsbn());
+        book.setCategory(bookRequest.getCategory());
+        book.setCondition(bookRequest.getCondition());
+        book.setPrice(bookRequest.getPrice());
+        book.setDescription(bookRequest.getDescription());
+        book.setStock(bookRequest.getStock());
+        book.setDeliveryType(bookRequest.getDeliveryType());
+        book.setImages(bookRequest.getImages());
         bookService.updateBook(id, book);
         return Result.success("更新成功");
     }

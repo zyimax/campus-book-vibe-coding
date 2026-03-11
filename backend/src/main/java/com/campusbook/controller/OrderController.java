@@ -50,6 +50,18 @@ public class OrderController {
         return Result.success("订单已取消");
     }
 
+    @PutMapping("/{id}/pay")
+    public Result<String> payOrder(@PathVariable Integer id) {
+        orderService.payOrder(id);
+        return Result.success("支付成功");
+    }
+
+    @PutMapping("/{id}/ship")
+    public Result<String> shipOrder(@PathVariable Integer id) {
+        orderService.shipOrder(id);
+        return Result.success("已发货");
+    }
+
     @PutMapping("/{id}/confirm")
     public Result<String> confirmOrder(@PathVariable Integer id) {
         orderService.confirmOrder(id);

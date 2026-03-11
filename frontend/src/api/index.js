@@ -23,7 +23,22 @@ export const orderAPI = {
   getList: (params) => request.get('/orders', { params }),
   getDetail: (id) => request.get(`/orders/${id}`),
   cancel: (id) => request.put(`/orders/${id}/cancel`),
+  pay: (id) => request.put(`/orders/${id}/pay`),
+  ship: (id) => request.put(`/orders/${id}/ship`),
   confirm: (id) => request.put(`/orders/${id}/confirm`)
+}
+
+export const uploadAPI = {
+  uploadImage: (file) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return request.post('/upload/image', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  },
+  deleteImage: (filename) => request.delete(`/upload/image/${filename}`)
 }
 
 export const addressAPI = {

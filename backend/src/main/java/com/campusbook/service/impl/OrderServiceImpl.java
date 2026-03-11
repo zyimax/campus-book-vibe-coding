@@ -97,6 +97,28 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     @Transactional
+    public void payOrder(Integer id) {
+        Order order = getById(id);
+        if (order == null || order.getStatus() != 0) {
+            throw new RuntimeException("订单状态不允许支付");
+        }
+        order.setStatus(1);
+        updateById(order);
+    }
+
+    @Override
+    @Transactional
+    public void shipOrder(Integer id) {
+        Order order = getById(id);
+        if (order == null || order.getStatus() != 1) {
+            throw new RuntimeException("订单状态不允许发货");
+        }
+        order.setStatus(2);
+        updateById(order);
+    }
+
+    @Override
+    @Transactional
     public void confirmOrder(Integer id) {
         Order order = getById(id);
         if (order == null || order.getStatus() != 2) {

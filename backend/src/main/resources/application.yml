@@ -30,5 +30,5 @@ jwt:
   secret: campusbook-secret-key-2024
   expiration: 86400000
 
-file:
-  upload-path: ./uploads/
+upload:
+  path: ./uploads/

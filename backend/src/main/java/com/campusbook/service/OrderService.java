@@ -14,5 +14,9 @@ public interface OrderService extends IService<Order> {
 
     void cancelOrder(Integer id);
 
+    void payOrder(Integer id);
+
+    void shipOrder(Integer id);
+
     void confirmOrder(Integer id);
 }

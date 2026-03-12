@@ -32,7 +32,11 @@ function Home() {
       setPagination(prev => ({ ...prev, current: page, total }))
     } catch (error) {
       console.error('获取书籍列表失败', error)
-      message.error('获取书籍列表失败，请检查网络连接')
+      if (error.code === 'ECONNABORTED') {
+        message.error('请求超时，服务器响应时间过长，请稍后重试')
+      } else {
+        message.error('获取书籍列表失败，请检查网络连接')
+      }
       setBooks([])
     } finally {
       setLoading(false)

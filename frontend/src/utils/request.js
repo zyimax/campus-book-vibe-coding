@@ -5,7 +5,7 @@ import { refreshToken, isTokenExpired, shouldRefreshToken } from './auth'
 const request = axios.create({
   // baseURL: '/api',
   baseURL: import.meta.env.VITE_API_URL || '/api',
-  timeout: 10000,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8'
   }
@@ -101,6 +101,8 @@ request.interceptors.response.use(
         default:
           message.error(data.message || '网络错误，请稍后重试')
       }
+    } else if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
+      message.error('请求超时，请稍后重试')
     } else if (error.request) {
       message.error('网络错误，请检查网络连接')
     } else {

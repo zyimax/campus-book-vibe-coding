@@ -24,8 +24,8 @@ public class BookController {
 
     @GetMapping
     public Result<IPage<Book>> getBookList(
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20") Integer size) {
+            @RequestParam(required = false, defaultValue = "1") Integer page,
+            @RequestParam(required = false, defaultValue = "20") Integer size) {
         IPage<Book> books = bookService.getBookList(page, size);
         return Result.success(books);
     }
@@ -84,8 +84,8 @@ public class BookController {
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String condition,
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20") Integer size) {
+            @RequestParam(required = false, defaultValue = "1") Integer page,
+            @RequestParam(required = false, defaultValue = "20") Integer size) {
         IPage<Book> books = bookService.searchBooks(keyword, category, condition, page, size);
         return Result.success(books);
     }
@@ -93,8 +93,8 @@ public class BookController {
     @GetMapping("/category/{type}")
     public Result<IPage<Book>> getBooksByCategory(
             @PathVariable String type,
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20") Integer size) {
+            @RequestParam(required = false, defaultValue = "1") Integer page,
+            @RequestParam(required = false, defaultValue = "20") Integer size) {
         IPage<Book> books = bookService.getBooksByCategory(type, page, size);
         return Result.success(books);
     }

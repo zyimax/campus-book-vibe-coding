@@ -5,7 +5,8 @@ export const userAPI = {
   login: (data) => request.post('/user/login', data),
   getProfile: () => request.get('/user/profile'),
   updateProfile: (data) => request.put('/user/profile', data),
-  logout: () => request.post('/user/logout')
+  logout: () => request.post('/user/logout'),
+  refreshToken: (token) => request.post('/user/refresh-token', { token })
 }
 
 export const bookAPI = {

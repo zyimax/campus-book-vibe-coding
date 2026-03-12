@@ -1,6 +1,7 @@
 package com.campusbook.controller;
 
 import com.campusbook.dto.LoginRequest;
+import com.campusbook.dto.RefreshTokenRequest;
 import com.campusbook.dto.RegisterRequest;
 import com.campusbook.dto.Result;
 import com.campusbook.entity.User;
@@ -51,5 +52,16 @@ public class UserController {
     @PostMapping("/logout")
     public Result<String> logout() {
         return Result.success("退出成功");
+    }
+
+    @PostMapping("/refresh-token")
+    public Result<String> refreshToken(@Validated @RequestBody RefreshTokenRequest request) {
+        try {
+            Integer userId = jwtUtil.getUserIdFromToken(request.getToken());
+            String newToken = jwtUtil.generateToken(userId);
+            return Result.success(newToken);
+        } catch (Exception e) {
+            return Result.error("令牌刷新失败: " + e.getMessage());
+        }
     }
 }

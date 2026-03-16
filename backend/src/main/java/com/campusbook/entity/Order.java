@@ -22,6 +22,7 @@ public class Order {
 
     private BigDecimal totalPrice;
 
+    @TableField("`status`")
     private Integer status;
 
     @TableField(fill = FieldFill.INSERT)

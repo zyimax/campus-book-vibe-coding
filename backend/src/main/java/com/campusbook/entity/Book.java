@@ -20,6 +20,7 @@ public class Book {
 
     private String category;
 
+    @TableField("`condition`")
     private String condition;
 
     private BigDecimal price;
@@ -34,6 +35,7 @@ public class Book {
 
     private Integer userId;
 
+    @TableField("`status`")
     private Integer status;
 
     private Integer viewCount;

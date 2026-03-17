@@ -20,10 +20,13 @@ function Home() {
     setLoading(true)
     try {
       const res = await bookAPI.getList({ page, size: pagination.pageSize })
-      setBooks(res.data.list)
-      setPagination(prev => ({ ...prev, current: page, total: res.data.total }))
+      const bookList = res.data?.records || res.data?.list || []
+      const total = res.data?.total || 0
+      setBooks(bookList)
+      setPagination(prev => ({ ...prev, current: page, total }))
     } catch (error) {
       console.error('获取书籍列表失败', error)
+      setBooks([])
     } finally {
       setLoading(false)
     }

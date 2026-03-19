@@ -11,7 +11,8 @@ function Register() {
   const onFinish = async (values) => {
     setLoading(true)
     try {
-      await userAPI.register(values)
+      const { confirmPassword, ...registerData } = values
+      await userAPI.register(registerData)
       message.success('注册成功，请登录')
       navigate('/login')
     } catch (error) {

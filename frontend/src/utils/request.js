@@ -12,6 +12,13 @@ const request = axios.create({
 
 request.interceptors.request.use(
   async config => {
+    const publicEndpoints = ['/user/login', '/user/register', '/user/refresh-token']
+    const isPublicEndpoint = publicEndpoints.some(endpoint => config.url?.includes(endpoint))
+    
+    if (isPublicEndpoint) {
+      return config
+    }
+    
     let token = localStorage.getItem('token')
     
     if (token) {
@@ -53,8 +60,10 @@ request.interceptors.response.use(
     
     if (error.response) {
       const { status, data } = error.response
+      const publicEndpoints = ['/user/login', '/user/register', '/user/refresh-token']
+      const isPublicEndpoint = publicEndpoints.some(endpoint => error.config.url?.includes(endpoint))
       
-      if (status === 401 && !error.config._retry) {
+      if (status === 401 && !error.config._retry && !isPublicEndpoint) {
         try {
           const newToken = await refreshToken()
           error.config._retry = true
@@ -70,10 +79,12 @@ request.interceptors.response.use(
       
       switch (status) {
         case 401:
-          message.error(data.message || '登录已过期，请重新登录')
-          localStorage.removeItem('token')
-          localStorage.removeItem('userInfo')
-          window.location.href = '/login'
+          if (!isPublicEndpoint) {
+            message.error(data.message || '登录已过期，请重新登录')
+            localStorage.removeItem('token')
+            localStorage.removeItem('userInfo')
+            window.location.href = '/login'
+          }
           break
         case 403:
           message.error(data.message || '没有权限访问')

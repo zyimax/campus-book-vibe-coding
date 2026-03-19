@@ -15,9 +15,10 @@ function Orders() {
     setLoading(true)
     try {
       const res = await orderAPI.getList({ status })
-      setOrders(res.data.list)
+      setOrders(res.data?.records || res.data?.list || [])
     } catch (error) {
       console.error('获取订单列表失败', error)
+      setOrders([])
     } finally {
       setLoading(false)
     }

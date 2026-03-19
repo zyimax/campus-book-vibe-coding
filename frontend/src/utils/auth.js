@@ -14,6 +14,12 @@ const onRefreshed = (token) => {
 }
 
 export const refreshToken = async () => {
+  const oldToken = localStorage.getItem('token')
+  
+  if (!oldToken) {
+    throw new Error('无有效令牌，请重新登录')
+  }
+
   if (isRefreshing) {
     return new Promise((resolve) => {
       addRefreshSubscriber((token) => {
@@ -24,7 +30,6 @@ export const refreshToken = async () => {
 
   isRefreshing = true
   try {
-    const oldToken = localStorage.getItem('token')
     const res = await userAPI.refreshToken(oldToken)
     const newToken = res.data
     

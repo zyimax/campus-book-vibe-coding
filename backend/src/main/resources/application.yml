@@ -34,7 +34,7 @@ mybatis-plus:
       logic-not-delete-value: 0
 
 jwt:
-  secret: campusbook-secret-key-2024
+  secret: campusbook-secret-key-2024-secure-jwt-token
   expiration: 86400000
 
 upload:

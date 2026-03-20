@@ -12,30 +12,28 @@ const request = axios.create({
 
 request.interceptors.request.use(
   async config => {
-    const publicEndpoints = ['/user/login', '/user/register', '/user/refresh-token']
+    const publicEndpoints = ['/user/login', '/user/register', '/user/refresh-token', '/books', '/books/search', '/books/category']
     const isPublicEndpoint = publicEndpoints.some(endpoint => config.url?.includes(endpoint))
-    
+
     if (isPublicEndpoint) {
       return config
     }
-    
+
     let token = localStorage.getItem('token')
-    
+
     if (token) {
       if (isTokenExpired(token)) {
-        try {
-          token = await refreshToken()
-          config.headers.Authorization = `Bearer ${token}`
-        } catch (error) {
-          return Promise.reject(error)
-        }
+        localStorage.removeItem('token')
+        localStorage.removeItem('userInfo')
+        window.location.href = '/login'
+        return Promise.reject(new Error('Token expired'))
       } else if (shouldRefreshToken(token)) {
-        refreshToken().catch(() => {})
+        refreshToken().catch(() => { })
       }
-      
+
       config.headers.Authorization = `Bearer ${token}`
     }
-    
+
     return config
   },
   error => {
@@ -47,22 +45,23 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   response => {
     const { data } = response
-    
+
     if (data.code === 200) {
       return data
     } else {
-      message.error(data.message || '请求失败')
-      return Promise.reject(new Error(data.message || '请求失败'))
+      const error = new Error(data.message || '请求失败')
+      error.response = { data }
+      return Promise.reject(error)
     }
   },
   async error => {
     console.error('响应错误:', error)
-    
+
     if (error.response) {
       const { status, data } = error.response
       const publicEndpoints = ['/user/login', '/user/register', '/user/refresh-token']
       const isPublicEndpoint = publicEndpoints.some(endpoint => error.config.url?.includes(endpoint))
-      
+
       if (status === 401 && !error.config._retry && !isPublicEndpoint) {
         try {
           const newToken = await refreshToken()
@@ -76,7 +75,7 @@ request.interceptors.response.use(
           return Promise.reject(refreshError)
         }
       }
-      
+
       switch (status) {
         case 401:
           if (!isPublicEndpoint) {
@@ -103,7 +102,7 @@ request.interceptors.response.use(
     } else {
       message.error('请求配置错误')
     }
-    
+
     return Promise.reject(error)
   }
 )

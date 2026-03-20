@@ -12,11 +12,14 @@ function Login() {
     setLoading(true)
     try {
       const res = await userAPI.login(values)
-      localStorage.setItem('token', res.data.token)
+      const token = res.data?.token || res.data
+      localStorage.setItem('token', token)
       message.success('登录成功')
       navigate('/')
     } catch (error) {
       console.error('登录失败', error)
+      const errorMsg = error.response?.data?.message || error.message || '登录失败，请检查用户名和密码'
+      message.error(errorMsg)
     } finally {
       setLoading(false)
     }

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Tabs, Table, Tag, Button, message, Space } from 'antd'
+import { Card, Tabs, Table, Tag, Button, message, Space, Empty } from 'antd'
 import { orderAPI } from '../api'
 import { useNavigate } from 'react-router-dom'
-
-const { TabPane } = Tabs
 
 function Orders() {
   const [orders, setOrders] = useState([])
@@ -15,9 +13,12 @@ function Orders() {
     setLoading(true)
     try {
       const res = await orderAPI.getList({ status })
-      setOrders(res.data?.records || res.data?.list || [])
+      const orderList = res.data?.records || res.data?.list || []
+      setOrders(orderList)
     } catch (error) {
       console.error('获取订单列表失败', error)
+      const errorMsg = error.response?.data?.message || error.message || '获取订单列表失败'
+      message.error(errorMsg)
       setOrders([])
     } finally {
       setLoading(false)
@@ -48,6 +49,8 @@ function Orders() {
       fetchOrders(activeTab === 'all' ? '' : activeTab)
     } catch (error) {
       console.error('取消订单失败', error)
+      const errorMsg = error.response?.data?.message || error.message || '取消订单失败'
+      message.error(errorMsg)
     }
   }
 
@@ -58,6 +61,8 @@ function Orders() {
       fetchOrders(activeTab === 'all' ? '' : activeTab)
     } catch (error) {
       console.error('确认收货失败', error)
+      const errorMsg = error.response?.data?.message || error.message || '确认收货失败'
+      message.error(errorMsg)
     }
   }
 
@@ -74,11 +79,11 @@ function Orders() {
   }
 
   const columns = [
-    { title: '订单号', dataIndex: 'order_no', key: 'order_no' },
+    { title: '订单号', dataIndex: 'orderNo', key: 'orderNo' },
     { title: '书籍名称', dataIndex: ['book', 'title'], key: 'book_title' },
-    { title: '价格', dataIndex: 'total_price', key: 'total_price', render: (price) => `¥${price}` },
+    { title: '价格', dataIndex: 'totalPrice', key: 'totalPrice', render: (price) => `¥${price}` },
     { title: '状态', dataIndex: 'status', key: 'status', render: (status) => getStatusTag(status) },
-    { title: '创建时间', dataIndex: 'created_at', key: 'created_at' },
+    { title: '创建时间', dataIndex: 'createdAt', key: 'createdAt' },
     {
       title: '操作',
       key: 'action',
@@ -102,21 +107,24 @@ function Orders() {
     }
   ]
 
+  const tabItems = [
+    { key: 'all', label: '全部订单' },
+    { key: 'pending', label: '待付款' },
+    { key: 'paid', label: '待发货' },
+    { key: 'shipped', label: '待收货' },
+    { key: 'completed', label: '已完成' },
+    { key: 'cancelled', label: '已取消' }
+  ]
+
   return (
     <Card title="我的订单">
-      <Tabs activeKey={activeTab} onChange={handleTabChange}>
-        <TabPane tab="全部订单" key="all" />
-        <TabPane tab="待付款" key="pending" />
-        <TabPane tab="待发货" key="paid" />
-        <TabPane tab="待收货" key="shipped" />
-        <TabPane tab="已完成" key="completed" />
-        <TabPane tab="已取消" key="cancelled" />
-      </Tabs>
+      <Tabs activeKey={activeTab} onChange={handleTabChange} items={tabItems} />
       <Table
         columns={columns}
         dataSource={orders}
         loading={loading}
         rowKey="id"
+        locale={{ emptyText: <Empty description="暂无订单" /> }}
       />
     </Card>
   )

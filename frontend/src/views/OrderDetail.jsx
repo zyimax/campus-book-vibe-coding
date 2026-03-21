@@ -1,22 +1,35 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { Card, Descriptions, Tag, Button, message, Steps } from 'antd'
+import { useParams, useNavigate } from 'react-router-dom'
+import { Card, Descriptions, Tag, Button, message, Steps, Result } from 'antd'
 import { orderAPI } from '../api'
 
 const { Step } = Steps
 
 function OrderDetail() {
   const { id } = useParams()
+  const navigate = useNavigate()
   const [order, setOrder] = useState(null)
   const [loading, setLoading] = useState(false)
 
   const fetchOrderDetail = async () => {
+    if (!id) {
+      message.error('订单ID无效')
+      return
+    }
     setLoading(true)
     try {
       const res = await orderAPI.getDetail(id)
-      setOrder(res.data)
+      if (res.data) {
+        setOrder(res.data)
+      } else {
+        message.error('订单不存在')
+        navigate('/orders')
+      }
     } catch (error) {
       console.error('获取订单详情失败', error)
+      const errorMsg = error.response?.data?.message || error.message || '获取订单详情失败'
+      message.error(errorMsg)
+      navigate('/orders')
     } finally {
       setLoading(false)
     }
@@ -33,6 +46,8 @@ function OrderDetail() {
       fetchOrderDetail()
     } catch (error) {
       console.error('取消订单失败', error)
+      const errorMsg = error.response?.data?.message || error.message || '取消订单失败'
+      message.error(errorMsg)
     }
   }
 
@@ -43,6 +58,8 @@ function OrderDetail() {
       fetchOrderDetail()
     } catch (error) {
       console.error('确认收货失败', error)
+      const errorMsg = error.response?.data?.message || error.message || '确认收货失败'
+      message.error(errorMsg)
     }
   }
 
@@ -66,10 +83,31 @@ function OrderDetail() {
       3: 3,
       4: -1
     }
-    return stepMap[status] || 0
+    return stepMap[status] !== undefined ? stepMap[status] : 0
   }
 
-  if (!order) return <div>加载中...</div>
+  if (loading) {
+    return (
+      <Card loading={true}>
+        <div style={{ height: 300 }} />
+      </Card>
+    )
+  }
+
+  if (!order) {
+    return (
+      <Result
+        status="404"
+        title="订单不存在"
+        subTitle="该订单可能已被删除或您没有权限查看"
+        extra={
+          <Button type="primary" onClick={() => navigate('/orders')}>
+            返回订单列表
+          </Button>
+        }
+      />
+    )
+  }
 
   return (
     <Card title="订单详情" loading={loading}>
@@ -80,12 +118,12 @@ function OrderDetail() {
         <Step title="已完成" />
       </Steps>
       <Descriptions bordered>
-        <Descriptions.Item label="订单号">{order.order_no}</Descriptions.Item>
+        <Descriptions.Item label="订单号">{order.orderNo}</Descriptions.Item>
         <Descriptions.Item label="订单状态">{getStatusTag(order.status)}</Descriptions.Item>
-        <Descriptions.Item label="创建时间">{order.created_at}</Descriptions.Item>
+        <Descriptions.Item label="创建时间">{order.createdAt}</Descriptions.Item>
         <Descriptions.Item label="书籍名称">{order.book?.title}</Descriptions.Item>
         <Descriptions.Item label="作者">{order.book?.author}</Descriptions.Item>
-        <Descriptions.Item label="价格">¥{order.total_price}</Descriptions.Item>
+        <Descriptions.Item label="价格">¥{order.totalPrice}</Descriptions.Item>
         <Descriptions.Item label="收货人">{order.address?.receiver}</Descriptions.Item>
         <Descriptions.Item label="联系电话">{order.address?.phone}</Descriptions.Item>
         <Descriptions.Item label="收货地址">{order.address?.address}</Descriptions.Item>

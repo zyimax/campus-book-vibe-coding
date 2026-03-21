@@ -77,6 +77,9 @@ request.interceptors.response.use(
       }
 
       switch (status) {
+        case 400:
+          message.error(data.message || '请求参数错误')
+          break
         case 401:
           if (!isPublicEndpoint) {
             message.error(data.message || '登录已过期，请重新登录')

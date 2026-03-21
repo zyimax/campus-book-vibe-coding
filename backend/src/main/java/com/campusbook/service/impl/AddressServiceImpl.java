@@ -24,7 +24,7 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
     @Override
     @Transactional
     public void addAddress(Address address) {
-        if (address.getIsDefault() == 1) {
+        if (address.getIsDefault() != null && address.getIsDefault() == 1) {
             LambdaQueryWrapper<Address> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(Address::getUserId, address.getUserId());
             wrapper.eq(Address::getIsDefault, 1);
@@ -33,6 +33,9 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
                 defaultAddress.setIsDefault(0);
                 updateById(defaultAddress);
             }
+        }
+        if (address.getIsDefault() == null) {
+            address.setIsDefault(0);
         }
         save(address);
     }

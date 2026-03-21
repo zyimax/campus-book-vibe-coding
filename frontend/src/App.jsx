@@ -10,6 +10,7 @@ import Category from './views/Category'
 import Search from './views/Search'
 import Orders from './views/Orders'
 import OrderDetail from './views/OrderDetail'
+import OrderCreate from './views/OrderCreate'
 import Address from './views/Address'
 import Profile from './views/Profile'
 
@@ -25,6 +26,7 @@ function App() {
         <Route path="category/:type" element={<Category />} />
         <Route path="search" element={<Search />} />
         <Route path="orders" element={<Orders />} />
+        <Route path="order/create" element={<OrderCreate />} />
         <Route path="order/:id" element={<OrderDetail />} />
         <Route path="address" element={<Address />} />
         <Route path="profile" element={<Profile />} />

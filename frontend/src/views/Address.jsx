@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Table, Button, Modal, Form, Input, Radio, message, Space } from 'antd'
+import { Card, Table, Button, Modal, Form, Input, Radio, message, Space, Empty } from 'antd'
 import { addressAPI } from '../api'
 
 function Address() {
@@ -13,9 +13,13 @@ function Address() {
     setLoading(true)
     try {
       const res = await addressAPI.getList()
-      setAddresses(res.data.list)
+      const addressList = res.data?.list || res.data?.records || res.data || []
+      setAddresses(addressList)
     } catch (error) {
       console.error('获取地址列表失败', error)
+      const errorMsg = error.response?.data?.message || error.message || '获取地址列表失败'
+      message.error(errorMsg)
+      setAddresses([])
     } finally {
       setLoading(false)
     }
@@ -33,7 +37,10 @@ function Address() {
 
   const handleEdit = (record) => {
     setEditingAddress(record)
-    form.setFieldsValue(record)
+    form.setFieldsValue({
+      ...record,
+      isDefault: record.isDefault || 0
+    })
     setModalVisible(true)
   }
 
@@ -44,6 +51,8 @@ function Address() {
       fetchAddresses()
     } catch (error) {
       console.error('删除地址失败', error)
+      const errorMsg = error.response?.data?.message || error.message || '删除地址失败'
+      message.error(errorMsg)
     }
   }
 
@@ -54,6 +63,8 @@ function Address() {
       fetchAddresses()
     } catch (error) {
       console.error('设置默认地址失败', error)
+      const errorMsg = error.response?.data?.message || error.message || '设置默认地址失败'
+      message.error(errorMsg)
     }
   }
 
@@ -71,6 +82,8 @@ function Address() {
       fetchAddresses()
     } catch (error) {
       console.error('操作失败', error)
+      const errorMsg = error.response?.data?.message || error.message || '操作失败'
+      message.error(errorMsg)
     }
   }
 
@@ -80,16 +93,16 @@ function Address() {
     { title: '收货地址', dataIndex: 'address', key: 'address' },
     {
       title: '默认地址',
-      dataIndex: 'is_default',
-      key: 'is_default',
-      render: (isDefault) => (isDefault ? '是' : '否')
+      dataIndex: 'isDefault',
+      key: 'isDefault',
+      render: (isDefault) => (isDefault === 1 ? '是' : '否')
     },
     {
       title: '操作',
       key: 'action',
       render: (_, record) => (
         <Space>
-          {!record.is_default && (
+          {record.isDefault !== 1 && (
             <Button type="link" onClick={() => handleSetDefault(record.id)}>
               设为默认
             </Button>
@@ -115,6 +128,7 @@ function Address() {
         dataSource={addresses}
         loading={loading}
         rowKey="id"
+        locale={{ emptyText: <Empty description="暂无收货地址" /> }}
       />
       <Modal
         title={editingAddress ? '编辑地址' : '新增地址'}
@@ -146,7 +160,7 @@ function Address() {
           </Form.Item>
           <Form.Item
             label="设为默认地址"
-            name="is_default"
+            name="isDefault"
             initialValue={0}
           >
             <Radio.Group>

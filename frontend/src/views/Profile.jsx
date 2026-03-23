@@ -39,14 +39,23 @@ function Profile() {
 
   const uploadProps = {
     name: 'file',
-    action: '/api/upload',
+    action: '/api/upload/image',
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`
+    },
     showUploadList: false,
     onChange: async (info) => {
       if (info.file.status === 'done') {
         const avatarUrl = info.file.response?.data?.url
-        await userAPI.updateProfile({ avatar: avatarUrl })
-        message.success('头像上传成功')
-        fetchProfile()
+        if (avatarUrl) {
+          await userAPI.updateProfile({ avatar: avatarUrl })
+          message.success('头像上传成功')
+          fetchProfile()
+        } else {
+          message.error('头像上传失败')
+        }
+      } else if (info.file.status === 'error') {
+        message.error('头像上传失败')
       }
     }
   }

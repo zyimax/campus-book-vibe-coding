@@ -86,15 +86,7 @@ function Home() {
   return (
     <div style={{ padding: '0 0 40px' }}>
       {/* 英雄区域 */}
-      <div style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        borderRadius: 'var(--radius-xl)',
-        padding: '60px 40px',
-        marginBottom: '40px',
-        textAlign: 'center',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
+      <div className="hero">
         {/* 装饰性背景元素 */}
         <div style={{
           position: 'absolute',
@@ -118,38 +110,15 @@ function Home() {
         }} />
         
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <h1 style={{
-            fontSize: '42px',
-            fontWeight: 800,
-            color: 'white',
-            marginBottom: '16px',
-            textShadow: '0 2px 10px rgba(0,0,0,0.2)'
-          }}>
-            发现校园好书
-          </h1>
-          <p style={{
-            fontSize: '18px',
-            color: 'rgba(255,255,255,0.9)',
-            marginBottom: '32px'
-          }}>
-            让闲置书籍流转起来，与志同道合的书友相遇
-          </p>
-          
+          <h1 className="hero-title">发现校园好书</h1>
+          <p className="hero-subtitle">让闲置书籍流转起来，与志同道合的书友相遇</p>
+
           {/* 搜索框 */}
-          <div style={{
-            maxWidth: '600px',
-            margin: '0 auto',
-            background: 'white',
-            borderRadius: 'var(--radius-lg)',
-            padding: '8px',
-            boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
-            display: 'flex',
-            gap: '8px'
-          }}>
+          <div className="hero-search">
             <Input
               placeholder="搜索书名、作者、ISBN..."
               size="large"
-              style={{
+                style={{
                 flex: 1,
                 border: 'none',
                 fontSize: '16px'

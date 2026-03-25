@@ -4,7 +4,6 @@ import { SearchOutlined, EyeOutlined, BookOutlined, FireOutlined, ClockCircleOut
 import { bookAPI } from '../api'
 import { useNavigate } from 'react-router-dom'
 
-// 分类配置
 const categories = [
   { key: 'Textbook', label: '教材教辅', color: '#3b82f6', icon: '📚' },
   { key: 'Exam Prep', label: '考试用书', color: '#10b981', icon: '📝' },
@@ -13,7 +12,6 @@ const categories = [
   { key: 'Other', label: '其他类别', color: '#6b7280', icon: '📦' }
 ]
 
-// 成色配置
 const conditionConfig = {
   colors: {
     'Like New': '#10b981',
@@ -37,7 +35,6 @@ function Home() {
   const [selectedCategory, setSelectedCategory] = useState('')
   const navigate = useNavigate()
 
-  // 获取书籍列表
   const fetchBooks = useCallback(async (page = 1) => {
     setLoading(true)
     try {
@@ -59,42 +56,34 @@ function Home() {
     }
   }, [pagination.pageSize])
 
-  // 页面加载时获取书籍列表
   useEffect(() => {
     fetchBooks()
   }, [fetchBooks])
 
-  // 处理页面变化
   const handlePageChange = useCallback((page) => {
     fetchBooks(page)
   }, [fetchBooks])
 
-  // 处理搜索
   const handleSearch = useCallback(() => {
     navigate('/search', { state: { keyword, category: selectedCategory } })
   }, [navigate, keyword, selectedCategory])
 
-  // 处理分类变化
   const handleCategoryChange = useCallback((category) => {
     setSelectedCategory(category)
   }, [])
 
-  // 获取分类信息
   const getCategoryInfo = useCallback((categoryKey) => {
     return categories.find(cat => cat.key === categoryKey) || { label: categoryKey, color: '#6b7280', icon: '📦' }
   }, [])
 
-  // 获取成色颜色
   const getConditionColor = useCallback((condition) => {
     return conditionConfig.colors[condition] || '#6b7280'
   }, [])
 
-  // 获取成色标签
   const getConditionLabel = useCallback((condition) => {
     return conditionConfig.labels[condition] || condition
   }, [])
 
-  // 渲染分类按钮
   const renderCategoryButton = useCallback((cat) => {
     const isActive = selectedCategory === cat.key
     return (
@@ -130,11 +119,10 @@ function Home() {
     )
   }, [selectedCategory, handleCategoryChange])
 
-  // 渲染书籍卡片
   const renderBookCard = useCallback((book) => {
     const categoryInfo = getCategoryInfo(book.category)
     return (
-      <Col xs={24} sm={12} md={8} lg={6} key={book.id}>
+      <Col xs={24} sm={12} md={8} lg={6} key={book.id} className="animate-fade-in">
         <Card
           hoverable
           onClick={() => navigate(`/book/${book.id}`)}
@@ -145,7 +133,8 @@ function Home() {
             boxShadow: 'var(--shadow-md)',
             transition: 'all var(--transition-normal)',
             cursor: 'pointer',
-            background: 'var(--bg-primary)'
+            background: 'var(--bg-primary)',
+            position: 'relative'
           }}
           bodyStyle={{ padding: 'var(--spacing-4)' }}
           onMouseEnter={(e) => {
@@ -185,16 +174,17 @@ function Home() {
                   display: 'flex', 
                   flexDirection: 'column',
                   alignItems: 'center',
-                  gap: 'var(--spacing-2)'
+                  gap: 'var(--spacing-2)',
+                  padding: 'var(--spacing-4)'
                 }}>
                   <BookOutlined style={{ fontSize: '64px', color: 'var(--text-muted)' }} />
                   <div style={{ 
                     color: 'var(--text-muted)',
-                    fontSize: 'var(--text-sm)'
+                    fontSize: 'var(--text-sm)',
+                    textAlign: 'center'
                   }}>暂无封面</div>
                 </div>
               )}
-              {/* 分类标签 */}
               <div style={{
                 position: 'absolute',
                 top: 'var(--spacing-3)',
@@ -205,11 +195,11 @@ function Home() {
                 borderRadius: 'var(--radius-full)',
                 fontSize: 'var(--text-xs)',
                 fontWeight: 'var(--font-semibold)',
-                boxShadow: 'var(--shadow-md)'
+                boxShadow: 'var(--shadow-md)',
+                transition: 'all var(--transition-normal)'
               }}>
                 {categoryInfo.icon} {categoryInfo.label}
               </div>
-              {/* 成色标签 */}
               <div style={{
                 position: 'absolute',
                 top: 'var(--spacing-3)',
@@ -220,11 +210,11 @@ function Home() {
                 borderRadius: 'var(--radius-full)',
                 fontSize: 'var(--text-xs)',
                 fontWeight: 'var(--font-semibold)',
-                boxShadow: 'var(--shadow-md)'
+                boxShadow: 'var(--shadow-md)',
+                transition: 'all var(--transition-normal)'
               }}>
                 {getConditionLabel(book.condition)}
               </div>
-              {/* 热门标签 */}
               {book.viewCount && book.viewCount > 100 && (
                 <div style={{
                   position: 'absolute',
@@ -239,7 +229,8 @@ function Home() {
                   boxShadow: 'var(--shadow-md)',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '4px'
+                  gap: '4px',
+                  animation: 'pulse 2s infinite'
                 }}>
                   <FireOutlined style={{ fontSize: '12px' }} />
                   热门
@@ -288,7 +279,8 @@ function Home() {
               <span style={{
                 fontSize: 'var(--text-2xl)',
                 fontWeight: 'var(--font-bold)',
-                color: 'var(--error-color)'
+                color: 'var(--error-color)',
+                textShadow: '0 1px 2px rgba(239, 68, 68, 0.2)'
               }}>
                 ¥{book.price}
               </span>
@@ -335,7 +327,6 @@ function Home() {
     )
   }, [navigate, getCategoryInfo, getConditionColor, getConditionLabel])
 
-  // 渲染全部书籍按钮
   const renderAllBooksButton = useCallback(() => {
     const isActive = selectedCategory === ''
     return (
@@ -371,13 +362,11 @@ function Home() {
 
   return (
     <div style={{ padding: '0 0 var(--spacing-12)' }}>
-      {/* 英雄区域 */}
       <div className="hero" style={{ 
         marginBottom: 'var(--spacing-10)',
         borderRadius: 'var(--radius-2xl)',
         padding: 'var(--spacing-16) var(--spacing-8)'
       }}>
-        {/* 装饰性背景元素 */}
         <div style={{
           position: 'absolute',
           top: '-50%',
@@ -401,7 +390,7 @@ function Home() {
           animation: 'float 8s ease-in-out infinite reverse'
         }} />
         
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: '800px', margin: '0 auto' }}>
+        <div className="hero-content">
           <h1 className="hero-title animate-fade-in" style={{ 
             fontSize: 'var(--text-4xl)',
             marginBottom: 'var(--spacing-4)'
@@ -412,7 +401,6 @@ function Home() {
             marginBottom: 'var(--spacing-8)'
           }}>让闲置书籍流转起来，与志同道合的书友相遇</p>
 
-          {/* 搜索框 */}
           <div className="hero-search animate-fade-in" style={{ 
             animationDelay: '0.4s',
             maxWidth: '700px',
@@ -487,7 +475,6 @@ function Home() {
         </div>
       </div>
 
-      {/* 分类筛选 */}
       <div style={{ marginBottom: 'var(--spacing-10)' }}>
         <div style={{
           display: 'flex',
@@ -504,7 +491,6 @@ function Home() {
         </div>
       </div>
 
-      {/* 书籍列表 */}
       {loading ? (
         <div style={{ 
           textAlign: 'center', 
@@ -541,7 +527,6 @@ function Home() {
             {books.map(renderBookCard)}
           </Row>
           
-          {/* 分页 */}
           <div style={{ 
             marginTop: 'var(--spacing-12)', 
             textAlign: 'center'

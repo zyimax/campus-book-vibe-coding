@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import { Card, Form, Input, Button, Avatar, Upload, message, Divider, List, Spin, Empty } from 'antd'
+import { Card, Form, Input, Button, Avatar, Upload, message, List, Spin, Empty } from 'antd'
 import { UserOutlined, UploadOutlined, EnvironmentOutlined, ShoppingOutlined, EditOutlined, LogoutOutlined } from '@ant-design/icons'
 import { userAPI } from '../api'
 import { useNavigate } from 'react-router-dom'
 
-// 常用功能菜单
 const menuItems = [
   {
     icon: <ShoppingOutlined />,
@@ -28,7 +27,6 @@ function Profile() {
   const [form] = Form.useForm()
   const navigate = useNavigate()
 
-  // 获取用户信息
   const fetchProfile = useCallback(async () => {
     setLoading(true)
     setError(null)
@@ -45,12 +43,10 @@ function Profile() {
     }
   }, [form])
 
-  // 页面加载时获取用户信息
   useEffect(() => {
     fetchProfile()
   }, [fetchProfile])
 
-  // 处理更新用户信息
   const handleUpdate = useCallback(async (values) => {
     setLoading(true)
     try {
@@ -65,7 +61,6 @@ function Profile() {
     }
   }, [fetchProfile])
 
-  // 处理头像上传
   const handleAvatarUpload = useCallback(async (info) => {
     if (info.file.status === 'uploading') {
       setAvatarLoading(true)
@@ -92,14 +87,12 @@ function Profile() {
     }
   }, [fetchProfile])
 
-  // 处理退出登录
   const handleLogout = useCallback(() => {
     localStorage.removeItem('token')
     navigate('/login')
     message.success('已退出登录')
   }, [navigate])
 
-  // 上传配置
   const uploadProps = {
     name: 'file',
     action: '/api/upload/image',
@@ -110,7 +103,6 @@ function Profile() {
     onChange: handleAvatarUpload
   }
 
-  // 加载状态
   if (loading) {
     return (
       <div style={{ 
@@ -132,7 +124,6 @@ function Profile() {
     )
   }
 
-  // 错误状态
   if (error) {
     return (
       <div style={{ 
@@ -161,13 +152,69 @@ function Profile() {
     )
   }
 
+  const renderMenuItem = (item) => (
+    <List.Item
+      key={item.path}
+      style={{
+        cursor: 'pointer',
+        borderRadius: 'var(--radius-lg)',
+        padding: 'var(--spacing-4)',
+        transition: 'all var(--transition-normal)',
+        marginBottom: 'var(--spacing-3)'
+      }}
+      onClick={() => navigate(item.path)}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = 'var(--bg-tertiary)'
+        e.currentTarget.style.transform = 'translateX(8px)'
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = 'transparent'
+        e.currentTarget.style.transform = 'translateX(0)'
+      }}
+    >
+      <List.Item.Meta
+        avatar={
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 48,
+            height: 48,
+            borderRadius: 'var(--radius-full)',
+            background: 'var(--bg-tertiary)',
+            color: 'var(--primary-color)'
+          }}>
+            {item.icon}
+          </div>
+        }
+        title={
+          <div style={{
+            fontSize: 'var(--text-base)',
+            fontWeight: 'var(--font-semibold)',
+            color: 'var(--text-primary)'
+          }}>
+            {item.title}
+          </div>
+        }
+        description={
+          <div style={{
+            fontSize: 'var(--text-sm)',
+            color: 'var(--text-secondary)'
+          }}>
+            {item.description}
+          </div>
+        }
+      />
+      <EditOutlined style={{ color: 'var(--text-muted)' }} />
+    </List.Item>
+  )
+
   return (
     <div style={{ 
       display: 'flex', 
       gap: 'var(--spacing-6)',
       flexWrap: 'wrap'
     }}>
-      {/* 个人信息卡片 */}
       <Card 
         title="个人中心" 
         style={{
@@ -181,7 +228,6 @@ function Profile() {
         }}
         bodyStyle={{ padding: 'var(--spacing-6)' }}
       >
-        {/* 头像部分 */}
         <div style={{ 
           textAlign: 'center', 
           marginBottom: 'var(--spacing-6)',
@@ -222,7 +268,6 @@ function Profile() {
           </Upload>
         </div>
 
-        {/* 个人信息表单 */}
         <Form
           form={form}
           layout="vertical"
@@ -348,7 +393,6 @@ function Profile() {
         </Form>
       </Card>
 
-      {/* 常用功能卡片 */}
       <Card 
         title="常用功能" 
         style={{
@@ -364,61 +408,7 @@ function Profile() {
         <List
           itemLayout="horizontal"
           dataSource={menuItems}
-          renderItem={(item) => (
-            <List.Item
-              style={{
-                cursor: 'pointer',
-                borderRadius: 'var(--radius-lg)',
-                padding: 'var(--spacing-4)',
-                transition: 'all var(--transition-normal)',
-                marginBottom: 'var(--spacing-3)'
-              }}
-              onClick={() => navigate(item.path)}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'var(--bg-tertiary)'
-                e.currentTarget.style.transform = 'translateX(8px)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent'
-                e.currentTarget.style.transform = 'translateX(0)'
-              }}
-            >
-              <List.Item.Meta
-                avatar={
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: 48,
-                    height: 48,
-                    borderRadius: 'var(--radius-full)',
-                    background: 'var(--bg-tertiary)',
-                    color: 'var(--primary-color)'
-                  }}>
-                    {item.icon}
-                  </div>
-                }
-                title={
-                  <div style={{
-                    fontSize: 'var(--text-base)',
-                    fontWeight: 'var(--font-semibold)',
-                    color: 'var(--text-primary)'
-                  }}>
-                    {item.title}
-                  </div>
-                }
-                description={
-                  <div style={{
-                    fontSize: 'var(--text-sm)',
-                    color: 'var(--text-secondary)'
-                  }}>
-                    {item.description}
-                  </div>
-                }
-              />
-              <EditOutlined style={{ color: 'var(--text-muted)' }} />
-            </List.Item>
-          )}
+          renderItem={renderMenuItem}
         />
       </Card>
     </div>

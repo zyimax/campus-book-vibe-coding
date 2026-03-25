@@ -5,22 +5,23 @@
   box-sizing: border-box;
 }
 
-/* CSS变量定义 - 现代配色方案 */
+/* CSS变量定义 - 校园书市品牌配色 */
 :root {
-  /* 主色调 - 学术蓝 */
-  --primary-color: #2563eb;
-  --primary-light: #3b82f6;
-  --primary-dark: #1d4ed8;
-  --primary-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  --primary-subtle: rgba(37, 99, 235, 0.1);
+  /* 方案1：知识蓝（当前方案） */
+  /* 主色调 - 知识蓝 */
+  --primary-color: #3b82f6;
+  --primary-light: #60a5fa;
+  --primary-dark: #2563eb;
+  --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  --primary-subtle: rgba(59, 130, 246, 0.1);
   
   /* 辅助色 */
-  --secondary-color: #7c3aed;
-  --secondary-light: #8b5cf6;
-  --secondary-dark: #6d28d9;
-  --accent-color: #f59e0b;
-  --accent-light: #fbbf24;
-  --accent-dark: #d97706;
+  --secondary-color: #10b981;
+  --secondary-light: #34d399;
+  --secondary-dark: #059669;
+  --accent-color: #f97316;
+  --accent-light: #fb923c;
+  --accent-dark: #ea580c;
   --success-color: #10b981;
   --success-light: #34d399;
   --success-dark: #059669;
@@ -32,17 +33,49 @@
   --error-dark: #dc2626;
   
   /* 中性色 */
-  --text-primary: #1f2937;
-  --text-secondary: #4b5563;
-  --text-muted: #9ca3af;
-  --text-light: #e5e7eb;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --text-light: #cbd5e1;
   --bg-primary: #ffffff;
-  --bg-secondary: #f9fafb;
-  --bg-tertiary: #f3f4f6;
-  --bg-quaternary: #e5e7eb;
-  --border-color: #e5e7eb;
-  --border-light: #f3f4f6;
-  --border-dark: #d1d5db;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --bg-quaternary: #e2e8f0;
+  --border-color: #e2e8f0;
+  --border-light: #f1f5f9;
+  --border-dark: #cbd5e1;
+  
+  /* 方案2：活力橙 */
+  /* 主色调 - 活力橙 */
+  --primary-color-alt: #f97316;
+  --primary-light-alt: #fb923c;
+  --primary-dark-alt: #ea580c;
+  --primary-gradient-alt: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  --primary-subtle-alt: rgba(249, 115, 22, 0.1);
+  
+  /* 辅助色 */
+  --secondary-color-alt: #3b82f6;
+  --secondary-light-alt: #60a5fa;
+  --secondary-dark-alt: #2563eb;
+  --accent-color-alt: #10b981;
+  --accent-light-alt: #34d399;
+  --accent-dark-alt: #059669;
+  
+  /* 方案3：清新绿 */
+  /* 主色调 - 清新绿 */
+  --primary-color-alt2: #10b981;
+  --primary-light-alt2: #34d399;
+  --primary-dark-alt2: #059669;
+  --primary-gradient-alt2: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --primary-subtle-alt2: rgba(16, 185, 129, 0.1);
+  
+  /* 辅助色 */
+  --secondary-color-alt2: #3b82f6;
+  --secondary-light-alt2: #60a5fa;
+  --secondary-dark-alt2: #2563eb;
+  --accent-color-alt2: #f97316;
+  --accent-light-alt2: #fb923c;
+  --accent-dark-alt2: #ea580c;
   
   /* 阴影 */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -850,7 +883,7 @@ button:active {
 
 /* 首页封面（Hero）样式 */
 .hero {
-  background: linear-gradient(135deg, rgba(99,102,241,0.95) 0%, rgba(37,99,235,0.95) 100%);
+  background: linear-gradient(135deg, rgba(59,130,246,0.95) 0%, rgba(37,99,235,0.95) 100%);
   border-radius: var(--radius-xl);
   padding: 60px 40px;
   margin-bottom: 40px;
@@ -858,6 +891,7 @@ button:active {
   position: relative;
   overflow: hidden;
   color: white;
+  box-shadow: var(--shadow-xl);
 }
 
 .hero-title {
@@ -867,12 +901,14 @@ button:active {
   color: #ffffff;
   margin-bottom: 12px;
   text-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  line-height: 1.2;
 }
 
 .hero-subtitle {
   font-size: 18px;
   color: rgba(255,255,255,0.92);
   margin-bottom: 28px;
+  line-height: 1.4;
 }
 
 .hero-search {
@@ -884,6 +920,12 @@ button:active {
   box-shadow: var(--shadow-lg);
   display: flex;
   gap: 8px;
+  transition: all var(--transition-normal);
+}
+
+.hero-search:hover {
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-2px);
 }
 
 .hero .decorative-circle {
@@ -891,4 +933,21 @@ button:active {
   border-radius: 50%;
   filter: blur(60px);
   opacity: 0.12;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB4PSIwIiB5PSIwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSgxNSkiPjxwYXRoIGQ9Ik0gNDAgMCBMIDAgMCAwIDQwIiBmaWxsPSJub25lIiBzdHJva2U9InJnYmEoMjU1LCAyNTUsIDI1NSwgMC4xKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI3BhdHRlcm4pIiAvPjwvc3ZnPg==');
+  opacity: 0.1;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
 }

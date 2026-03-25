@@ -10,7 +10,6 @@ function BookDetail() {
   const [error, setError] = useState(null)
   const navigate = useNavigate()
 
-  // 获取书籍详情
   const fetchBookDetail = useCallback(async () => {
     setLoading(true)
     setError(null)
@@ -26,19 +25,16 @@ function BookDetail() {
     }
   }, [id])
 
-  // 页面加载时获取书籍详情
   useEffect(() => {
     fetchBookDetail()
   }, [fetchBookDetail])
 
-  // 处理购买
   const handleBuy = useCallback(() => {
     if (book) {
       navigate('/order/create', { state: { book } })
     }
   }, [navigate, book])
 
-  // 加载状态
   if (loading) {
     return (
       <div style={{ 
@@ -60,7 +56,6 @@ function BookDetail() {
     )
   }
 
-  // 错误状态
   if (error) {
     return (
       <div style={{ 
@@ -89,7 +84,6 @@ function BookDetail() {
     )
   }
 
-  // 无数据状态
   if (!book) {
     return (
       <div style={{ 
@@ -118,6 +112,39 @@ function BookDetail() {
     )
   }
 
+  const renderBookImages = () => {
+    if (!book.images) {
+      return (
+        <div style={{
+          fontSize: 'var(--text-sm)',
+          color: 'var(--text-muted)',
+          padding: 'var(--spacing-8)',
+          background: 'var(--bg-secondary)',
+          borderRadius: 'var(--radius-md)',
+          textAlign: 'center'
+        }}>
+          暂无图片
+        </div>
+      )
+    }
+
+    const images = Array.isArray(book.images) ? book.images : JSON.parse(book.images)
+    return images.map((img, index) => (
+      <Image 
+        key={index} 
+        src={img} 
+        width={200} 
+        style={{ 
+          borderRadius: 'var(--radius-md)',
+          boxShadow: 'var(--shadow-sm)',
+          transition: 'transform 0.3s ease'
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+      />
+    ))
+  }
+
   return (
     <Card 
       style={{
@@ -129,7 +156,6 @@ function BookDetail() {
       }}
       bodyStyle={{ padding: 'var(--spacing-6)' }}
     >
-      {/* 书籍标题 */}
       <h1 style={{
         fontSize: 'var(--text-3xl)',
         fontWeight: 'var(--font-bold)',
@@ -140,7 +166,6 @@ function BookDetail() {
         {book.title}
       </h1>
 
-      {/* 书籍信息 */}
       <Descriptions 
         bordered 
         style={{
@@ -162,7 +187,6 @@ function BookDetail() {
 
       <Divider style={{ margin: 'var(--spacing-6) 0' }} />
 
-      {/* 书籍描述 */}
       <div style={{ marginBottom: 'var(--spacing-8)' }}>
         <h3 style={{
           fontSize: 'var(--text-xl)',
@@ -182,7 +206,6 @@ function BookDetail() {
         </div>
       </div>
 
-      {/* 书籍图片 */}
       <div style={{ marginBottom: 'var(--spacing-8)' }}>
         <h3 style={{
           fontSize: 'var(--text-xl)',
@@ -198,54 +221,10 @@ function BookDetail() {
           background: 'var(--bg-tertiary)',
           borderRadius: 'var(--radius-lg)'
         }}>
-          {book.images ? (
-            Array.isArray(book.images) ? (
-              book.images.map((img, index) => (
-                <Image 
-                  key={index} 
-                  src={img} 
-                  width={200} 
-                  style={{ 
-                    borderRadius: 'var(--radius-md)',
-                    boxShadow: 'var(--shadow-sm)',
-                    transition: 'transform 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                />
-              ))
-            ) : (
-              JSON.parse(book.images).map((img, index) => (
-                <Image 
-                  key={index} 
-                  src={img} 
-                  width={200} 
-                  style={{ 
-                    borderRadius: 'var(--radius-md)',
-                    boxShadow: 'var(--shadow-sm)',
-                    transition: 'transform 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                />
-              ))
-            )
-          ) : (
-            <div style={{
-              fontSize: 'var(--text-sm)',
-              color: 'var(--text-muted)',
-              padding: 'var(--spacing-8)',
-              background: 'var(--bg-secondary)',
-              borderRadius: 'var(--radius-md)',
-              textAlign: 'center'
-            }}>
-              暂无图片
-            </div>
-          )}
+          {renderBookImages()}
         </div>
       </div>
 
-      {/* 操作按钮 */}
       <div style={{ 
         display: 'flex', 
         justifyContent: 'center',

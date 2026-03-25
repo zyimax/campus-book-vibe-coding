@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
-import { Layout as AntLayout, Avatar, Dropdown, Button, Menu as AntMenu, Drawer } from 'antd'
+import { Layout as AntLayout, Avatar, Dropdown, Button, Drawer } from 'antd'
 import { 
   HomeOutlined, 
   ShoppingOutlined, 
@@ -13,10 +13,10 @@ import {
   HeartOutlined,
   MessageOutlined
 } from '@ant-design/icons'
+import ColorSchemeSwitcher from './ColorSchemeSwitcher'
 
 const { Header, Content, Footer } = AntLayout
 
-// 导航菜单配置
 const menuItems = [
   { key: '/', icon: <HomeOutlined />, label: '首页' },
   { key: '/publish', icon: <PlusCircleOutlined />, label: '发布书籍' },
@@ -24,7 +24,6 @@ const menuItems = [
   { key: '/profile', icon: <UserOutlined />, label: '个人中心' }
 ]
 
-// 通用按钮样式
 const buttonStyles = {
   width: '44px',
   height: '44px',
@@ -37,7 +36,6 @@ const buttonStyles = {
   color: 'var(--text-primary)'
 }
 
-// 导航按钮样式
 const navButtonStyles = (isActive) => ({
   height: '44px',
   padding: '0 var(--spacing-5)',
@@ -50,7 +48,9 @@ const navButtonStyles = (isActive) => ({
   color: isActive ? 'white' : 'var(--text-primary)',
   transition: 'all var(--transition-normal)',
   position: 'relative',
-  overflow: 'hidden'
+  overflow: 'hidden',
+  minWidth: '100px',
+  textAlign: 'center'
 })
 
 function Layout() {
@@ -59,7 +59,6 @@ function Layout() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  // 处理滚动事件，使用useCallback缓存函数
   const handleScroll = useCallback(() => {
     setScrolled(window.scrollY > 20)
   }, [])
@@ -69,38 +68,31 @@ function Layout() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [handleScroll])
 
-  // 处理退出登录
   const handleLogout = useCallback(() => {
     localStorage.removeItem('token')
     window.location.href = '/login'
   }, [])
 
-  // 用户菜单配置，使用useMemo缓存
   const userMenuItems = useMemo(() => [
-    { 
-      key: 'profile', 
-      icon: <UserOutlined />, 
+    {
+      key: 'profile',
+      icon: <UserOutlined />,
       label: '个人中心',
       onClick: () => navigate('/profile')
     },
-    { 
-      key: 'logout', 
-      icon: <LogoutOutlined />, 
+    {
+      key: 'logout',
+      icon: <LogoutOutlined />,
       label: '退出登录',
       onClick: handleLogout
     }
   ], [navigate, handleLogout])
 
-  // 导航按钮渲染，使用useMemo缓存
   const renderNavButtons = useMemo(() => {
     return menuItems.map(item => {
       const isActive = location.pathname === item.key
       return (
-        <Link 
-          key={item.key} 
-          to={item.key}
-          style={{ textDecoration: 'none' }}
-        >
+        <Link key={item.key} to={item.key} style={{ textDecoration: 'none' }}>
           <Button
             type={isActive ? 'primary' : 'text'}
             icon={item.icon}
@@ -132,31 +124,47 @@ function Layout() {
     })
   }, [location.pathname])
 
-  // 通用按钮悬停处理
-  const handleButtonHover = (e, isHovering) => {
-    e.currentTarget.style.background = isHovering ? 'var(--bg-quaternary)' : 'var(--bg-tertiary)'
-    e.currentTarget.style.transform = isHovering ? 'scale(1.05)' : 'scale(1)'
-  }
+  const renderUserButton = (icon, onClick) => (
+    <Button
+      type="text"
+      icon={icon}
+      style={buttonStyles}
+      onClick={onClick}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = 'var(--bg-quaternary)'
+        e.currentTarget.style.transform = 'scale(1.05)'
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = 'var(--bg-tertiary)'
+        e.currentTarget.style.transform = 'scale(1)'
+      }}
+    />
+  )
 
-  // 渲染用户操作按钮
-  const renderUserButton = (icon, onClick) => {
-    return (
-      <Button
-        type="text"
-        icon={icon}
-        style={buttonStyles}
-        onClick={onClick}
-        onMouseEnter={(e) => handleButtonHover(e, true)}
-        onMouseLeave={(e) => handleButtonHover(e, false)}
-      />
-    )
-  }
+  const renderFooterLink = (path, text) => (
+    <Link to={path} style={{
+      color: 'var(--text-secondary)',
+      textDecoration: 'none',
+      transition: 'all var(--transition-normal)',
+      fontSize: 'var(--text-sm)'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.color = 'var(--primary-color)'
+      e.currentTarget.style.transform = 'translateY(-2px)'
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.color = 'var(--text-secondary)'
+      e.currentTarget.style.transform = 'translateY(0)'
+    }}>
+      {text}
+    </Link>
+  )
 
   return (
     <AntLayout style={{ minHeight: '100vh', background: 'var(--bg-secondary)' }}>
-      {/* 顶部导航栏 */}
-      <Header 
-        style={{ 
+      <ColorSchemeSwitcher />
+      <Header
+        style={{
           position: 'fixed',
           top: 0,
           left: 0,
@@ -174,37 +182,39 @@ function Layout() {
           borderBottom: scrolled ? '1px solid var(--border-color)' : 'none'
         }}
       >
-        {/* Logo */}
         <Link to="/" style={{ textDecoration: 'none' }}>
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
             gap: 'var(--spacing-3)',
-            fontSize: 'var(--text-2xl)', 
+            fontSize: 'var(--text-2xl)',
             fontWeight: 'var(--font-bold)',
             background: 'var(--primary-gradient)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
-            transition: 'all var(--transition-normal)'
+            transition: 'all var(--transition-normal)',
+            padding: 'var(--spacing-2) 0'
           }}>
-            <BookOutlined style={{ 
-              fontSize: '32px', 
+            <BookOutlined style={{
+              fontSize: '32px',
               color: 'var(--primary-color)',
-              transition: 'all var(--transition-normal)'
+              transition: 'all var(--transition-normal)',
+              filter: 'drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3))'
             }} />
-            <span>校园书市</span>
+            <span style={{
+              position: 'relative',
+              textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+            }}>校园书市</span>
           </div>
         </Link>
 
-        {/* 桌面端导航菜单 */}
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
           gap: 'var(--spacing-2)',
           flex: 1,
           justifyContent: 'center',
-          // 移动端隐藏
           '@media (max-width: 768px)': {
             display: 'none'
           }
@@ -212,10 +222,8 @@ function Layout() {
           {renderNavButtons}
         </div>
 
-        {/* 移动端菜单按钮 */}
-        <div style={{ 
+        <div style={{
           display: 'none',
-          // 移动端显示
           '@media (max-width: 768px)': {
             display: 'block'
           }
@@ -228,36 +236,31 @@ function Layout() {
           />
         </div>
 
-        {/* 右侧用户区域 */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-3)' }}>
-          {/* 搜索按钮 */}
           {renderUserButton(
             <SearchOutlined style={{ fontSize: '20px' }} />,
             () => navigate('/search')
           )}
 
-          {/* 消息按钮 */}
           {renderUserButton(
             <MessageOutlined style={{ fontSize: '20px' }} />,
             () => {}
           )}
 
-          {/* 收藏按钮 */}
           {renderUserButton(
             <HeartOutlined style={{ fontSize: '20px' }} />,
             () => {}
           )}
 
-          {/* 用户头像下拉菜单 */}
-          <Dropdown 
-            menu={{ items: userMenuItems }} 
-            placement="bottomRight" 
+          <Dropdown
+            menu={{ items: userMenuItems }}
+            placement="bottomRight"
             arrow
           >
-            <div style={{ 
-              cursor: 'pointer', 
-              display: 'flex', 
-              alignItems: 'center', 
+            <div style={{
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
               gap: 'var(--spacing-2)',
               padding: 'var(--spacing-1) var(--spacing-2)',
               borderRadius: 'var(--radius-full)',
@@ -269,21 +272,20 @@ function Layout() {
             onMouseLeave={(e) => {
               e.currentTarget.style.background = 'transparent'
             }}>
-              <Avatar 
+              <Avatar
                 size={44}
-                icon={<UserOutlined />} 
-                style={{ 
+                icon={<UserOutlined />}
+                style={{
                   background: 'var(--primary-gradient)',
                   boxShadow: 'var(--shadow-md)',
                   transition: 'all var(--transition-normal)'
-                }} 
+                }}
               />
             </div>
           </Dropdown>
         </div>
       </Header>
 
-      {/* 移动端菜单抽屉 */}
       <Drawer
         title="校园书市"
         placement="right"
@@ -295,12 +297,8 @@ function Layout() {
           {menuItems.map(item => {
             const isActive = location.pathname === item.key
             return (
-              <Link 
-                key={item.key} 
-                to={item.key}
-                style={{ textDecoration: 'none' }}
-                onClick={() => setMobileMenuOpen(false)}
-              >
+              <Link key={item.key} to={item.key} style={{ textDecoration: 'none' }}
+                onClick={() => setMobileMenuOpen(false)}>
                 <Button
                   type={isActive ? 'primary' : 'text'}
                   icon={item.icon}
@@ -320,8 +318,7 @@ function Layout() {
         </div>
       </Drawer>
 
-      {/* 主内容区域 */}
-      <Content style={{ 
+      <Content style={{
         marginTop: '72px',
         padding: 'var(--spacing-8)',
         minHeight: 'calc(100vh - 72px - 120px)',
@@ -335,8 +332,7 @@ function Layout() {
         </div>
       </Content>
 
-      {/* 页脚 */}
-      <Footer style={{ 
+      <Footer style={{
         textAlign: 'center',
         background: 'var(--bg-primary)',
         borderTop: '1px solid var(--border-color)',
@@ -344,7 +340,7 @@ function Layout() {
         color: 'var(--text-secondary)',
         boxShadow: 'var(--shadow-inset)'
       }}>
-        <div style={{ 
+        <div style={{
           maxWidth: '1200px',
           margin: '0 auto',
           display: 'flex',
@@ -352,114 +348,68 @@ function Layout() {
           alignItems: 'center',
           gap: 'var(--spacing-6)'
         }}>
-          {/* 品牌信息 */}
-          <div style={{ 
-            display: 'flex', 
+          <div style={{
+            display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: 'var(--spacing-3)'
+            gap: 'var(--spacing-3)',
+            padding: 'var(--spacing-4)',
+            borderRadius: 'var(--radius-xl)',
+            background: 'var(--bg-secondary)',
+            boxShadow: 'var(--shadow-sm)',
+            width: '100%',
+            maxWidth: '600px'
           }}>
-            <BookOutlined style={{ 
-              fontSize: '32px', 
+            <BookOutlined style={{
+              fontSize: '32px',
               color: 'var(--primary-color)',
-              marginBottom: 'var(--spacing-2)'
+              marginBottom: 'var(--spacing-2)',
+              filter: 'drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3))'
             }} />
-            <div style={{ 
-              fontSize: 'var(--text-2xl)', 
-              fontWeight: 'var(--font-bold)', 
-              color: 'var(--text-primary)'
+            <div style={{
+              fontSize: 'var(--text-2xl)',
+              fontWeight: 'var(--font-bold)',
+              color: 'var(--text-primary)',
+              background: 'var(--primary-gradient)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
             }}>校园书市</div>
-            <div style={{ 
+            <div style={{
               fontSize: 'var(--text-base)',
               color: 'var(--text-secondary)',
               maxWidth: '600px',
-              lineHeight: 'var(--leading-relaxed)'
+              lineHeight: 'var(--leading-relaxed)',
+              textAlign: 'center'
             }}>
               让每一本书找到新主人 · 让知识在校园流动
             </div>
           </div>
 
-          {/* 快速链接 */}
-          <div style={{ 
+          <div style={{
             display: 'flex',
             gap: 'var(--spacing-8)',
             flexWrap: 'wrap',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            padding: 'var(--spacing-4)',
+            borderRadius: 'var(--radius-xl)',
+            background: 'var(--bg-secondary)',
+            boxShadow: 'var(--shadow-sm)'
           }}>
-            <Link to="/" style={{ 
-              color: 'var(--text-secondary)',
-              textDecoration: 'none',
-              transition: 'all var(--transition-normal)',
-              fontSize: 'var(--text-sm)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'var(--primary-color)'
-              e.currentTarget.style.transform = 'translateY(-2px)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--text-secondary)'
-              e.currentTarget.style.transform = 'translateY(0)'
-            }}>
-              首页
-            </Link>
-            <Link to="/publish" style={{ 
-              color: 'var(--text-secondary)',
-              textDecoration: 'none',
-              transition: 'all var(--transition-normal)',
-              fontSize: 'var(--text-sm)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'var(--primary-color)'
-              e.currentTarget.style.transform = 'translateY(-2px)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--text-secondary)'
-              e.currentTarget.style.transform = 'translateY(0)'
-            }}>
-              发布书籍
-            </Link>
-            <Link to="/orders" style={{ 
-              color: 'var(--text-secondary)',
-              textDecoration: 'none',
-              transition: 'all var(--transition-normal)',
-              fontSize: 'var(--text-sm)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'var(--primary-color)'
-              e.currentTarget.style.transform = 'translateY(-2px)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--text-secondary)'
-              e.currentTarget.style.transform = 'translateY(0)'
-            }}>
-              我的订单
-            </Link>
-            <Link to="/profile" style={{ 
-              color: 'var(--text-secondary)',
-              textDecoration: 'none',
-              transition: 'all var(--transition-normal)',
-              fontSize: 'var(--text-sm)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'var(--primary-color)'
-              e.currentTarget.style.transform = 'translateY(-2px)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--text-secondary)'
-              e.currentTarget.style.transform = 'translateY(0)'
-            }}>
-              个人中心
-            </Link>
+            {renderFooterLink('/', '首页')}
+            {renderFooterLink('/publish', '发布书籍')}
+            {renderFooterLink('/orders', '我的订单')}
+            {renderFooterLink('/profile', '个人中心')}
           </div>
 
-          {/* 版权信息 */}
-          <div style={{ 
-            fontSize: 'var(--text-xs)', 
+          <div style={{
+            fontSize: 'var(--text-xs)',
             color: 'var(--text-muted)',
             marginTop: 'var(--spacing-4)',
             paddingTop: 'var(--spacing-4)',
             borderTop: '1px solid var(--border-light)',
-            width: '100%'
+            width: '100%',
+            textAlign: 'center'
           }}>
             © 2024 校园二手书交易平台 · 用心连接每一位读者
           </div>

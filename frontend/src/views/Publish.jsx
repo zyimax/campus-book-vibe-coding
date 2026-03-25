@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom'
 const { TextArea } = Input
 const { Option } = Select
 
-// 分类选项
 const categoryOptions = [
   { value: 'Textbook', label: '教材教辅' },
   { value: 'Exam Prep', label: '考试用书' },
@@ -16,7 +15,6 @@ const categoryOptions = [
   { value: 'Other', label: '其他类别' }
 ]
 
-// 成色选项
 const conditionOptions = [
   { value: 'Like New', label: '全新' },
   { value: 'Very Good', label: '很好' },
@@ -24,7 +22,6 @@ const conditionOptions = [
   { value: 'Fair', label: '一般' }
 ]
 
-// 交易方式选项
 const deliveryOptions = [
   { value: '仅自提', label: '仅自提' },
   { value: '仅快递', label: '仅快递' },
@@ -36,7 +33,6 @@ function Publish() {
   const [fileList, setFileList] = useState([])
   const navigate = useNavigate()
 
-  // 处理表单提交
   const onFinish = useCallback(async (values) => {
     setLoading(true)
     try {
@@ -52,12 +48,10 @@ function Publish() {
     }
   }, [fileList, navigate])
 
-  // 处理文件上传变化
   const handleUploadChange = useCallback(({ fileList: newFileList }) => {
     setFileList(newFileList)
   }, [])
 
-  // 上传配置
   const uploadProps = {
     name: 'file',
     action: '/api/upload',
@@ -70,6 +64,42 @@ function Publish() {
       removeIcon: <span style={{ fontSize: '16px', color: 'var(--error-color)' }}>×</span>
     }
   }
+
+  const renderInput = (placeholder, rules) => (
+    <Input 
+      placeholder={placeholder} 
+      style={{
+        borderRadius: 'var(--radius-lg)',
+        border: '1px solid var(--border-light)',
+        transition: 'all var(--transition-normal)'
+      }}
+      onFocus={(e) => {
+        e.target.style.borderColor = 'var(--primary-color)'
+        e.target.style.boxShadow = '0 0 0 2px rgba(37, 99, 235, 0.1)'
+      }}
+      onBlur={(e) => {
+        e.target.style.borderColor = 'var(--border-light)'
+        e.target.style.boxShadow = 'none'
+      }}
+    />
+  )
+
+  const renderSelect = (placeholder, options) => (
+    <Select 
+      placeholder={placeholder} 
+      style={{
+        borderRadius: 'var(--radius-lg)',
+        border: '1px solid var(--border-light)',
+        transition: 'all var(--transition-normal)'
+      }}
+    >
+      {options.map(option => (
+        <Option key={option.value} value={option.value}>
+          {option.label}
+        </Option>
+      ))}
+    </Select>
+  )
 
   return (
     <Card 
@@ -100,22 +130,7 @@ function Publish() {
             { max: 50, message: '书名不能超过50个字符' }
           ]}
         >
-          <Input 
-            placeholder="请输入书名" 
-            style={{
-              borderRadius: 'var(--radius-lg)',
-              border: '1px solid var(--border-light)',
-              transition: 'all var(--transition-normal)'
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = 'var(--primary-color)'
-              e.target.style.boxShadow = '0 0 0 2px rgba(37, 99, 235, 0.1)'
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = 'var(--border-light)'
-              e.target.style.boxShadow = 'none'
-            }}
-          />
+          {renderInput('请输入书名')}
         </Form.Item>
         
         <Form.Item
@@ -125,22 +140,7 @@ function Publish() {
             { max: 30, message: '作者名不能超过30个字符' }
           ]}
         >
-          <Input 
-            placeholder="请输入作者" 
-            style={{
-              borderRadius: 'var(--radius-lg)',
-              border: '1px solid var(--border-light)',
-              transition: 'all var(--transition-normal)'
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = 'var(--primary-color)'
-              e.target.style.boxShadow = '0 0 0 2px rgba(37, 99, 235, 0.1)'
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = 'var(--border-light)'
-              e.target.style.boxShadow = 'none'
-            }}
-          />
+          {renderInput('请输入作者')}
         </Form.Item>
         
         <Form.Item
@@ -150,22 +150,7 @@ function Publish() {
             { pattern: /^\d{10,13}$/, message: '请输入有效的ISBN码' }
           ]}
         >
-          <Input 
-            placeholder="请输入ISBN" 
-            style={{
-              borderRadius: 'var(--radius-lg)',
-              border: '1px solid var(--border-light)',
-              transition: 'all var(--transition-normal)'
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = 'var(--primary-color)'
-              e.target.style.boxShadow = '0 0 0 2px rgba(37, 99, 235, 0.1)'
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = 'var(--border-light)'
-              e.target.style.boxShadow = 'none'
-            }}
-          />
+          {renderInput('请输入ISBN')}
         </Form.Item>
         
         <Form.Item
@@ -173,20 +158,7 @@ function Publish() {
           name="category"
           rules={[{ required: true, message: '请选择分类' }]}
         >
-          <Select 
-            placeholder="请选择分类" 
-            style={{
-              borderRadius: 'var(--radius-lg)',
-              border: '1px solid var(--border-light)',
-              transition: 'all var(--transition-normal)'
-            }}
-          >
-            {categoryOptions.map(option => (
-              <Option key={option.value} value={option.value}>
-                {option.label}
-              </Option>
-            ))}
-          </Select>
+          {renderSelect('请选择分类', categoryOptions)}
         </Form.Item>
         
         <Form.Item
@@ -194,20 +166,7 @@ function Publish() {
           name="condition"
           rules={[{ required: true, message: '请选择成色' }]}
         >
-          <Select 
-            placeholder="请选择成色" 
-            style={{
-              borderRadius: 'var(--radius-lg)',
-              border: '1px solid var(--border-light)',
-              transition: 'all var(--transition-normal)'
-            }}
-          >
-            {conditionOptions.map(option => (
-              <Option key={option.value} value={option.value}>
-                {option.label}
-              </Option>
-            ))}
-          </Select>
+          {renderSelect('请选择成色', conditionOptions)}
         </Form.Item>
         
         <Form.Item
@@ -251,20 +210,7 @@ function Publish() {
           name="delivery_type"
           rules={[{ required: true, message: '请选择交易方式' }]}
         >
-          <Select 
-            placeholder="请选择交易方式" 
-            style={{
-              borderRadius: 'var(--radius-lg)',
-              border: '1px solid var(--border-light)',
-              transition: 'all var(--transition-normal)'
-            }}
-          >
-            {deliveryOptions.map(option => (
-              <Option key={option.value} value={option.value}>
-                {option.label}
-              </Option>
-            ))}
-          </Select>
+          {renderSelect('请选择交易方式', deliveryOptions)}
         </Form.Item>
         
         <Form.Item

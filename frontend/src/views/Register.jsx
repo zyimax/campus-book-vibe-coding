@@ -11,7 +11,6 @@ function Register() {
   const [error, setError] = useState(null)
   const navigate = useNavigate()
 
-  // 处理表单提交
   const onFinish = useCallback(async (values) => {
     setLoading(true)
     setError(null)
@@ -30,15 +29,36 @@ function Register() {
     }
   }, [navigate])
 
-  // 切换密码显示状态
   const togglePasswordVisibility = useCallback(() => {
     setShowPassword(!showPassword)
   }, [showPassword])
 
-  // 切换确认密码显示状态
   const toggleConfirmPasswordVisibility = useCallback(() => {
     setShowConfirmPassword(!showConfirmPassword)
   }, [showConfirmPassword])
+
+  const renderInput = (prefix, placeholder, rules) => (
+    <Input
+      prefix={prefix}
+      placeholder={placeholder}
+      size="large"
+      style={{
+        borderRadius: 'var(--radius-lg)',
+        height: '52px',
+        fontSize: '16px',
+        border: '1px solid var(--border-light)',
+        transition: 'all var(--transition-normal)'
+      }}
+      onFocus={(e) => {
+        e.target.style.borderColor = '#f5576c'
+        e.target.style.boxShadow = '0 0 0 3px rgba(245, 87, 108, 0.1)'
+      }}
+      onBlur={(e) => {
+        e.target.style.borderColor = 'var(--border-light)'
+        e.target.style.boxShadow = 'none'
+      }}
+    />
+  )
 
   return (
     <div style={{
@@ -53,7 +73,6 @@ function Register() {
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* 装饰性背景 */}
       <div style={{
         position: 'absolute',
         top: '-20%',
@@ -88,7 +107,6 @@ function Register() {
         zIndex: 1,
         animation: 'fadeInUp 0.6s ease forwards'
       }}>
-        {/* 卡片头部 */}
         <div style={{
           textAlign: 'center',
           padding: '40px 40px 20px',
@@ -137,7 +155,6 @@ function Register() {
           layout="vertical"
           style={{ padding: '0 32px 32px' }}
         >
-          {/* 错误提示 */}
           {error && (
             <Alert
               message={error}
@@ -156,26 +173,7 @@ function Register() {
               { max: 20, message: '用户名最多20个字符' }
             ]}
           >
-            <Input
-              prefix={<UserOutlined style={{ color: 'var(--text-muted)' }} />}
-              placeholder="用户名"
-              size="large"
-              style={{
-                borderRadius: 'var(--radius-lg)',
-                height: '52px',
-                fontSize: '16px',
-                border: '1px solid var(--border-light)',
-                transition: 'all var(--transition-normal)'
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#f5576c'
-                e.target.style.boxShadow = '0 0 0 3px rgba(245, 87, 108, 0.1)'
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--border-light)'
-                e.target.style.boxShadow = 'none'
-              }}
-            />
+            {renderInput(<UserOutlined style={{ color: 'var(--text-muted)' }} />, '用户名')}
           </Form.Item>
 
           <Form.Item
@@ -185,26 +183,7 @@ function Register() {
               { type: 'email', message: '请输入有效的邮箱地址' }
             ]}
           >
-            <Input
-              prefix={<MailOutlined style={{ color: 'var(--text-muted)' }} />}
-              placeholder="邮箱"
-              size="large"
-              style={{
-                borderRadius: 'var(--radius-lg)',
-                height: '52px',
-                fontSize: '16px',
-                border: '1px solid var(--border-light)',
-                transition: 'all var(--transition-normal)'
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#f5576c'
-                e.target.style.boxShadow = '0 0 0 3px rgba(245, 87, 108, 0.1)'
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--border-light)'
-                e.target.style.boxShadow = 'none'
-              }}
-            />
+            {renderInput(<MailOutlined style={{ color: 'var(--text-muted)' }} />, '邮箱')}
           </Form.Item>
 
           <Form.Item
@@ -214,26 +193,7 @@ function Register() {
               { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的手机号' }
             ]}
           >
-            <Input
-              prefix={<PhoneOutlined style={{ color: 'var(--text-muted)' }} />}
-              placeholder="手机号"
-              size="large"
-              style={{
-                borderRadius: 'var(--radius-lg)',
-                height: '52px',
-                fontSize: '16px',
-                border: '1px solid var(--border-light)',
-                transition: 'all var(--transition-normal)'
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#f5576c'
-                e.target.style.boxShadow = '0 0 0 3px rgba(245, 87, 108, 0.1)'
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--border-light)'
-                e.target.style.boxShadow = 'none'
-              }}
-            />
+            {renderInput(<PhoneOutlined style={{ color: 'var(--text-muted)' }} />, '手机号')}
           </Form.Item>
 
           <Form.Item

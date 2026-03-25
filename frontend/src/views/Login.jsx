@@ -10,7 +10,6 @@ function Login() {
   const [error, setError] = useState(null)
   const navigate = useNavigate()
 
-  // 处理表单提交
   const onFinish = useCallback(async (values) => {
     setLoading(true)
     setError(null)
@@ -30,10 +29,32 @@ function Login() {
     }
   }, [navigate])
 
-  // 切换密码显示状态
   const togglePasswordVisibility = useCallback(() => {
     setShowPassword(!showPassword)
   }, [showPassword])
+
+  const renderInput = (prefix, placeholder, rules) => (
+    <Input
+      prefix={prefix}
+      placeholder={placeholder}
+      size="large"
+      style={{
+        borderRadius: 'var(--radius-lg)',
+        height: '52px',
+        fontSize: '16px',
+        border: '1px solid var(--border-light)',
+        transition: 'all var(--transition-normal)'
+      }}
+      onFocus={(e) => {
+        e.target.style.borderColor = '#667eea'
+        e.target.style.boxShadow = '0 0 0 3px rgba(102, 126, 234, 0.1)'
+      }}
+      onBlur={(e) => {
+        e.target.style.borderColor = 'var(--border-light)'
+        e.target.style.boxShadow = 'none'
+      }}
+    />
+  )
 
   return (
     <div style={{
@@ -48,7 +69,6 @@ function Login() {
       position: 'relative',
       overflow: 'hidden'
     }}>
-      {/* 装饰性背景 */}
       <div style={{
         position: 'absolute',
         top: '-20%',
@@ -83,7 +103,6 @@ function Login() {
         zIndex: 1,
         animation: 'fadeInUp 0.6s ease forwards'
       }}>
-        {/* 卡片头部 */}
         <div style={{
           textAlign: 'center',
           padding: '40px 40px 20px',
@@ -132,7 +151,6 @@ function Login() {
           layout="vertical"
           style={{ padding: '0 32px 32px' }}
         >
-          {/* 错误提示 */}
           {error && (
             <Alert
               message={error}
@@ -150,26 +168,7 @@ function Login() {
               { min: 3, message: '用户名至少3个字符' }
             ]}
           >
-            <Input
-              prefix={<UserOutlined style={{ color: 'var(--text-muted)' }} />}
-              placeholder="用户名/邮箱/手机号"
-              size="large"
-              style={{
-                borderRadius: 'var(--radius-lg)',
-                height: '52px',
-                fontSize: '16px',
-                border: '1px solid var(--border-light)',
-                transition: 'all var(--transition-normal)'
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#667eea'
-                e.target.style.boxShadow = '0 0 0 3px rgba(102, 126, 234, 0.1)'
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'var(--border-light)'
-                e.target.style.boxShadow = 'none'
-              }}
-            />
+            {renderInput(<UserOutlined style={{ color: 'var(--text-muted)' }} />, '用户名/邮箱/手机号')}
           </Form.Item>
 
           <Form.Item

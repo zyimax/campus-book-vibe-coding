@@ -3,7 +3,8 @@ import { message } from 'antd'
 import { refreshToken, isTokenExpired, shouldRefreshToken } from './auth'
 
 const request = axios.create({
-  baseURL: '/api',
+  // baseURL: '/api',
+  baseURL: process.env.REACT_APP_API_URL || '/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json;charset=UTF-8'

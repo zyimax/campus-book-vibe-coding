@@ -1,22 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Button, Tooltip, Space } from 'antd'
-import { SettingOutlined, CheckOutlined } from '@ant-design/icons'
+import { CheckOutlined } from '@ant-design/icons'
 
-/**
- * 颜色方案切换器组件
- * 允许用户在不同的配色方案之间切换
- */
 function ColorSchemeSwitcher() {
   const [currentScheme, setCurrentScheme] = useState('blue')
 
-  // 切换颜色方案
   const switchColorScheme = (scheme) => {
     setCurrentScheme(scheme)
     
-    // 应用颜色方案
     const root = document.documentElement
     if (scheme === 'blue') {
-      // 方案1：知识蓝
       root.style.setProperty('--primary-color', '#3b82f6')
       root.style.setProperty('--primary-light', '#60a5fa')
       root.style.setProperty('--primary-dark', '#2563eb')
@@ -25,7 +18,6 @@ function ColorSchemeSwitcher() {
       root.style.setProperty('--secondary-color', '#10b981')
       root.style.setProperty('--accent-color', '#f97316')
     } else if (scheme === 'orange') {
-      // 方案2：活力橙
       root.style.setProperty('--primary-color', '#f97316')
       root.style.setProperty('--primary-light', '#fb923c')
       root.style.setProperty('--primary-dark', '#ea580c')
@@ -34,7 +26,6 @@ function ColorSchemeSwitcher() {
       root.style.setProperty('--secondary-color', '#3b82f6')
       root.style.setProperty('--accent-color', '#10b981')
     } else if (scheme === 'green') {
-      // 方案3：清新绿
       root.style.setProperty('--primary-color', '#10b981')
       root.style.setProperty('--primary-light', '#34d399')
       root.style.setProperty('--primary-dark', '#059669')

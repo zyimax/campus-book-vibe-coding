@@ -46,7 +46,7 @@ function Home() {
     } catch (error) {
       console.error('获取书籍列表失败', error)
       if (error.code === 'ECONNABORTED') {
-        message.error('请求超时，服务器响应时间过长，请稍后重试')
+        message.error('请求超时，请稍后重试')
       } else {
         message.error('获取书籍列表失败，请检查网络连接')
       }
@@ -158,7 +158,7 @@ function Home() {
             }}>
               {book.images && book.images.length > 0 ? (
                 <img 
-                  src={typeof book.images === 'string' ? book.images : book.images[0]} 
+                  src={`C:\\Users\\zheng\\Documents\\GitHub\\VibeCoding\\CampusBook\\uploads\\books\\${typeof book.images === 'string' ? book.images : book.images[0]}`} 
                   alt={book.title} 
                   style={{ 
                     width: '100%', 
@@ -279,8 +279,7 @@ function Home() {
               <span style={{
                 fontSize: 'var(--text-2xl)',
                 fontWeight: 'var(--font-bold)',
-                color: 'var(--error-color)',
-                textShadow: '0 1px 2px rgba(239, 68, 68, 0.2)'
+                color: 'var(--error-color)'
               }}>
                 ¥{book.price}
               </span>
@@ -399,7 +398,7 @@ function Home() {
             animationDelay: '0.2s',
             fontSize: 'var(--text-xl)',
             marginBottom: 'var(--spacing-8)'
-          }}>让闲置书籍流转起来，与志同道合的书友相遇</p>
+          }}>让闲置书籍流转起来，与书友相遇</p>
 
           <div className="hero-search animate-fade-in" style={{ 
             animationDelay: '0.4s',
@@ -447,8 +446,6 @@ function Home() {
                 fontSize: 'var(--text-lg)',
                 fontWeight: 'var(--font-semibold)',
                 transition: 'all var(--transition-normal)',
-                position: 'relative',
-                overflow: 'hidden',
                 boxShadow: 'var(--shadow-lg)'
               }}
               onMouseEnter={(e) => {
@@ -460,16 +457,7 @@ function Home() {
                 e.currentTarget.style.boxShadow = 'var(--shadow-lg)'
               }}
             >
-              <span style={{ position: 'relative', zIndex: 1 }}>搜索</span>
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: '-100%',
-                width: '100%',
-                height: '100%',
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
-                transition: 'left 0.6s ease'
-              }} />
+              搜索
             </Button>
           </div>
         </div>

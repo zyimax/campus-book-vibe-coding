@@ -132,7 +132,7 @@ function BookDetail() {
     return images.map((img, index) => (
       <Image 
         key={index} 
-        src={img} 
+        src={`C:\\Users\\zheng\\Documents\\GitHub\\VibeCoding\\CampusBook\\uploads\\books\\${img}`} 
         width={200} 
         style={{ 
           borderRadius: 'var(--radius-md)',

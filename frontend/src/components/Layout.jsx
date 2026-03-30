@@ -382,7 +382,7 @@ function Layout() {
               lineHeight: 'var(--leading-relaxed)',
               textAlign: 'center'
             }}>
-              让每一本书找到新主人 · 让知识在校园流动
+              让每一本书找到新主人，让知识在校园流动
             </div>
           </div>
 
@@ -411,7 +411,7 @@ function Layout() {
             width: '100%',
             textAlign: 'center'
           }}>
-            © 2024 校园二手书交易平台 · 用心连接每一位读者
+            © 2024 校园二手书交易平台，用心连接每一位读者
           </div>
         </div>
       </Footer>

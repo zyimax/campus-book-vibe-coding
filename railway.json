@@ -1,9 +1,6 @@
 {
   "$schema": "https://railway.app/railway.json",
   "build": {
-    "root": "backend"
-  },
-  "deploy": {
-    "startCommand": "java -jar target/campusbook-backend-1.0.0.jar"
+    "dockerfile": "backend/Dockerfile"
   }
 }

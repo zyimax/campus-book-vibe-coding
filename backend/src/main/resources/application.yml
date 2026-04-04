@@ -8,9 +8,9 @@ spring:
     name: campusbook-backend
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/campusbook?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: root
-    password: 2005.Zzy@05060o?
+    url: jdbc:mysql://${RAILWAY_MYSQL_HOST:localhost}:${RAILWAY_MYSQL_PORT:3306}/${RAILWAY_MYSQL_DB:campusbook}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${RAILWAY_MYSQL_USERNAME:root}
+    password: ${RAILWAY_MYSQL_PASSWORD:2005.Zzy@05060o?}
   output:
     ansi:
       enabled: always

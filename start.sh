@@ -1,5 +1,20 @@
-@echo off
-echo Starting CampusBook Backend...
+#!/bin/bash
+
+# 进入后端目录
 cd backend
-mvn spring-boot:run
-pause
+
+# 检查 Java 版本
+echo "Checking Java version..."
+java -version
+
+# 检查 Maven 版本
+echo "Checking Maven version..."
+mvn -version
+
+# 构建项目
+echo "Building Spring Boot application..."
+mvn clean package -DskipTests
+
+# 启动应用
+echo "Starting Spring Boot application..."
+java -jar target/campusbook-backend-1.0.0.jar

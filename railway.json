@@ -1,7 +1,6 @@
 {
   "$schema": "https://railway.app/railway.json",
   "build": {
-    "dockerContext": "backend",
-    "dockerfile": "Dockerfile"
+    "dockerfile": "backend/Dockerfile"
   }
 }

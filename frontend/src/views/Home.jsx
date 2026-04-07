@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Row, Col, Pagination, Input, Select, Button, Spin, Empty, Tag, Badge, Tooltip } from 'antd'
+import { Card, Row, Col, Pagination, Input, Select, Button, Spin, Empty, Tag, Badge, Tooltip, message } from 'antd'
 import { SearchOutlined, EyeOutlined, UserOutlined, BookOutlined, FireOutlined, StarOutlined } from '@ant-design/icons'
 import { bookAPI } from '../api'
 import { useNavigate } from 'react-router-dom'
@@ -32,6 +32,7 @@ function Home() {
       setPagination(prev => ({ ...prev, current: page, total }))
     } catch (error) {
       console.error('获取书籍列表失败', error)
+      message.error('获取书籍列表失败，请检查网络连接')
       setBooks([])
     } finally {
       setLoading(false)
